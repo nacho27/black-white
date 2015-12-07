@@ -1,0 +1,239 @@
+<html>
+<head>
+<title>Black & White</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<style>
+body{
+text-align:center;
+}
+h6{
+    margin: 10px auto;
+    
+}
+.game{
+    margin: 10px auto;
+    padding: 20px;
+    width: 500px;
+    height: 420px;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 1px;
+    border-style: solid;
+    
+}
+.info{
+    margin: 20px auto;
+    width: 500px;
+    height: 150px;
+    text-align: left;
+}
+.card{
+    margin: 20px auto;
+    width: 50px;
+    height: 50px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    justify-content: center;
+    font-size: 28px;
+}
+.card-small{
+    margin: auto 10px;
+    width: 20px;
+    height: 20px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
+.white{
+    background-color: white;
+    color: black;
+}
+.black{
+    background-color: black;
+    color: white;
+}
+.inline{
+    float: left;
+}
+.card-holder{
+    margin: 10px;
+}
+.card-table{
+    width: 400px;
+    height: 100px;
+}
+
+</style>
+<script>
+$(document).ready( function(){
+
+var white = 1;
+var black = 2;
+var playerA_score = 0;
+var playerB_score = 0;
+var odd_cards= [1,3,5,7,9];
+var even_cards=[0,2,4,6,8];
+
+var used_A = [];
+var used_B = [];
+var playerA, playerB;
+var round= 0;
+var temp_card;
+$("#player-A-score").text(playerA_score);
+$("#player-B-score").text(playerB_score);
+
+function initialize_game(playerA_color, playerB_color){
+        
+        $("#playerA").removeClass(playerB_color).addClass(playerA_color);
+        $("#playerB").removeClass(playerA_color).addClass(playerB_color);
+        
+        $("#player-A-card").removeClass(playerB_color).addClass(playerA_color);
+        $("#player-B-card").removeClass(playerA_color).addClass(playerB_color);
+        
+       var cardA_id = "card-A-";
+       var cardB_id = "card-B-";
+       var temp = [];
+       if(playerA_color == "white")
+            temp = odd_cards.slice();
+        else temp = even_cards.slice();
+        clearCards();
+        for( i = 1; i <=5 ; i++){
+            $("#card-B-list").append(generateCardB(cardB_id,i));
+            $("#card-A-list").append(generateCardA(cardA_id,i,temp[i-1]));
+            $("#"+cardA_id+i).removeClass(playerB_color).addClass(playerA_color);
+            $("#"+cardB_id+i).removeClass(playerA_color).addClass(playerB_color);
+            //$("#"+cardA_id + i ).html(temp[i-1]);
+            //$("#"+cardA_id + i).prop('value', temp[i-1]);
+        }
+}
+function clearCards(){
+    $("#card-B-list").empty();
+    $("#card-A-list").empty();
+    $("#play-card").html("?");
+}
+function generateCardB(cardB_id, i){
+       
+    var span_element = $('<span/>').attr({
+        id: cardB_id+i+"value",
+        class: "card-value"        
+    }).html("?");
+    var div_element = $('<div/>').attr({
+        id: cardB_id+i,
+        class: "card"
+    });
+    var li_element = $('<li/>').attr({
+        class: "inline card-holder"
+    });
+    div_element.append(span_element);
+    li_element.append(div_element);
+    return li_element;
+}
+
+function generateCardA(cardA_id, i, number_value){
+    var button_element = $('<button/>').attr({
+        type: "button",
+        id: cardA_id + i,
+        class: "card card-button",
+        value: number_value
+       // click: function(){
+       //     $("#play-card").html($(this).attr("value"));
+       // }
+    }).html(number_value);
+    var li_element = $('<li/>').attr({
+        class: "inline card-holder"
+    });
+    li_element.append(button_element);
+    return li_element;
+}
+
+$("#card-A-list").on('click', '.card-button', function(){
+    $("#play-card").html($(this).attr("value"));
+});
+
+//$(".card-button").click(function(){
+//    $("#play-card").html($(this).attr("value"));
+//});
+$("#start").click(function(){
+  
+    var playerA = Math.floor((Math.random()*2) + 1);
+    
+    if(playerA == white){
+        playerB=black;
+        initialize_game("white","black");     
+    }
+    
+    else {
+        playerB = white;
+        initialize_game("black","white");   
+    }
+   
+}    
+);
+});
+
+</script>
+</head>
+<body>
+
+<h2>Black & White </h2>
+<div >
+    
+    <div class="info">
+        <input id="start" type="button" value="Start">
+        <div>
+            <div id="playerA" class="card-small inline"></div>            
+            <p>Player A: <span id="player-A-score" ></span></p>
+            
+        </div>
+        <div>
+            <div id="playerB" class="card-small inline"></div>
+            <p>Player B: <span id="player-B-score"></span></p>
+        </div>
+        
+    </div>
+    <div class="game">
+        <div   >
+            <div class="card-table">
+                <ul id="card-B-list">
+                    <!-- 
+                    <li class="inline card-holder"><div  id="card-B-1" class="card"><span id="card-B-1-value" class="card-value">?</span></div></li>
+                    <li class="inline card-holder"><div  id="card-B-2" class="card "><span id="card-B-2-value" class="card-value">?</span></div></li>
+                    <li class="inline card-holder"> <div id="card-B-3" class="card"><span id="card-B-3-value" class="card-value">?</span></div></li>
+                    <li class="inline card-holder"><div  id="card-B-4" class="card "><span id="card-B-4-value" class="card-value">?</span></div></li>
+                    <li class="inline card-holder"><div  id="card-B-5" class="card"><span id="card-B-5-value" class="card-value">?</span></div></li> 
+                    -->
+                </ul>
+            </div>
+            <div style="clear:both"></div>
+            <h5 class="inline">Player B</h5>
+            <div  id="player-B-card" class="card"><span class="card-value">?</span></div>
+        </div>
+
+        <div >
+            <h5 class="inline">Player A</h5>
+            <div  id="player-A-card" class="card"><span id="play-card" class="card-value">?</span></div>
+             <div  class="card-table inline" >
+                <ul id="card-A-list">
+                    <!--
+                    <li class="inline card-holder"><button type="button"  id="card-A-1" class="card card-button" >$</button></li>
+                    <li class="inline card-holder"><button type="button" id="card-A-2" class="card card-button" >$</button></li>
+                    <li class="inline card-holder"> <button type="button" id="card-A-3" class="card card-button" >$</button></li>
+                    <li class="inline card-holder"><button type="button" id="card-A-4" class="card card-button" >$</button></li>
+                    <li class="inline card-holder"><button type="button" id="card-A-5" class="card card-button" >$</button></li>
+                    -->
+                </ul>
+            </div>  
+            <input    style="margin-top:44px" type="button" value="End Turn">  
+                  
+        </div>
+
+    
+    </div>
+</div>
+</body>
+</html>
+
+
+<html>
